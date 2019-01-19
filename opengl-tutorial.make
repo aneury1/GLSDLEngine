@@ -23,7 +23,7 @@ INCLUDES +=
 FORCE_INCLUDE +=
 ALL_CPPFLAGS += $(CPPFLAGS) -MMD -MP $(DEFINES) $(INCLUDES)
 ALL_RESFLAGS += $(RESFLAGS) $(DEFINES) $(INCLUDES)
-LIBS += -lwsock32 -lMingw32 -lSDL2Main -lSDL2
+LIBS += -lSDL2 -ldl
 LDDEPS +=
 LINKCMD = $(CXX) -o "$@" $(OBJECTS) $(RESOURCES) $(ALL_LDFLAGS) $(LIBS)
 define PREBUILDCMDS
@@ -35,7 +35,7 @@ endef
 
 ifeq ($(config),debug)
 TARGETDIR = bin/Debug
-TARGET = $(TARGETDIR)/opengl-tutorial.exe
+TARGET = $(TARGETDIR)/opengl-tutorial
 OBJDIR = obj/Debug
 DEFINES += -DSQLITE_THREADSAFE=1 -DDEBUG
 ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -g
@@ -44,7 +44,7 @@ ALL_LDFLAGS += $(LDFLAGS)
 
 else ifeq ($(config),release)
 TARGETDIR = bin/Release
-TARGET = $(TARGETDIR)/opengl-tutorial.exe
+TARGET = $(TARGETDIR)/opengl-tutorial
 OBJDIR = obj/Release
 DEFINES += -DSQLITE_THREADSAFE=1 -DNDEBUG
 ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -O2

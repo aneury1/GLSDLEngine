@@ -6,12 +6,14 @@
 
 class GLProgram
 {
-   std::vector<Shader *> shader;
+   std::vector<Shader *> shaders;
+   GLuint gl_program;
   public:
 
     GLProgram();
     ~GLProgram();
     void Use();
     void attachShader(Shader* sh);  
+    bool compile();
 
 };

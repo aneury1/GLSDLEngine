@@ -9,7 +9,7 @@ Window::Window()
 
   // Request an OpenGL 4.5 context (should be core)
   SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
-  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
   SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
   SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
   // Also request a depth buffer
@@ -62,6 +62,14 @@ void Window::PollEvent()
     {
       if (event.type == SDL_QUIT) {
           running = false;
+      }
+      if(event.key.keysym.sym==SDLK_q)
+      {
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+      }
+      if(event.key.keysym.sym==SDLK_f)
+      {
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
       }
     }
 }

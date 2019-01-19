@@ -12,7 +12,8 @@ enum class ShaderTypes{
 
 class Shader
 {
-    GLuint shader;
+    friend class GLProgram;
+    unsigned int shader;
     public:
     ////Shader(Shader &&sh)     =  delete;
     ////Shader(const Shader &sh) = delete;
@@ -20,7 +21,9 @@ class Shader
 
     Shader(ShaderTypes shader, const char *filename);
 
-    const GLuint getID()const{return shader;}
+    Shader( const char *str, ShaderTypes shader);
+
+     unsigned int getID(){return shader;}
    
     ~Shader();
 };
