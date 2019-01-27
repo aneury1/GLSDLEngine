@@ -3,6 +3,7 @@
 #include <cstdint>
 
 #include "GLProgram.h"
+#include "Sprite.h"
 
 static const char* default_space_vertex_shader =
     "\n"
@@ -41,10 +42,12 @@ struct Buffer
     Buffer(int w, int h, uint32_t color);
     Buffer(int w, int h);
     Buffer();
+    void  Draw(const Sprite& sprite,size_t x, size_t y, uint32_t color);
 
 };
 
 struct TextureBuffer{
+  
    GLuint text_id;
    GLint location;
    TextureBuffer(const Buffer* buffer_data);

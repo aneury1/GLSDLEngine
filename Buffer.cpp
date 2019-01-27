@@ -39,6 +39,32 @@ Buffer::Buffer()
    this->data   = new uint32_t[32 * 32];
    buffer_set(this, 0x00000000);
 }
+#include "Sprite.h"
+void Buffer::Draw(const Sprite& sprite,size_t x, size_t y, uint32_t color)
+{
+    for(size_t xi = 0; xi < sprite.width; ++xi)
+    {
+        for(size_t yi = 0; yi < sprite.height; ++yi)
+        {
+            size_t sy = sprite.height - 1 + y - yi;
+            size_t sx = x + xi;
+            if(sprite.data[yi * sprite.width + xi] &&
+               sy < height && sx < width) 
+            {
+                data[sy * width + sx] = color;
+            }
+        }
+    }
+    
+    glTexSubImage2D(
+        GL_TEXTURE_2D, 0, 0, 0,
+        this->width, this->height,
+        GL_RGBA, GL_UNSIGNED_INT_8_8_8_8,
+        this->data
+    );
+}
+
+
 
 TextureBuffer::TextureBuffer(const Buffer* buffer_data)
 {
@@ -64,3 +90,16 @@ TextureBuffer::TextureBuffer(const Buffer* buffer_data)
       location = glGetUniformLocation(program->getProgram(), str);
       glUniform1i(location, 0);
  }
+
+
+ /* 
+    buffer_sprite_draw(&buffer_test, alien_sprite, 322, 228, rgb_to_u32(128, 0, 0));
+
+    glTexSubImage2D(
+        GL_TEXTURE_2D, 0, 0, 0,
+        buffer_test.width, buffer_test.height,
+        GL_RGBA, GL_UNSIGNED_INT_8_8_8_8,
+        buffer_test.data
+    );
+ 
+ */
