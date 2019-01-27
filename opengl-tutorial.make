@@ -64,6 +64,7 @@ endif
 
 OBJECTS :=
 
+OBJECTS += $(OBJDIR)/Buffer.o
 OBJECTS += $(OBJDIR)/GLProgram.o
 OBJECTS += $(OBJDIR)/Shader.o
 OBJECTS += $(OBJDIR)/Window.o
@@ -130,6 +131,9 @@ endif
 # File Rules
 # #############################################
 
+$(OBJDIR)/Buffer.o: Buffer.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/GLProgram.o: GLProgram.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"

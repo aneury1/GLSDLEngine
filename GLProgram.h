@@ -15,5 +15,6 @@ class GLProgram
     void Use();
     void attachShader(Shader* sh);  
     bool compile();
+   inline GLuint getProgram(){return gl_program;}
 
 };
