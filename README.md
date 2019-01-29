@@ -1,2 +1,3 @@
-# sdl2-opengl-boiler-plate
-a simple sdl2/opengl boiler plate. 
+# GLSDLEnigne
+
+this project is used by me as boiler plate for simulation and games.
