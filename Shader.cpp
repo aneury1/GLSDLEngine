@@ -2,10 +2,19 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <string>
+#include <iostream>
 namespace Priv{
 
 const char *readFile(const char *filename){
-   return nullptr;
+   using namespace std;
+   ifstream ss(filename);
+   if(ss.good())
+     return std::string(std::istreambuf_iterator<char>(ss), std::istreambuf_iterator<char>()).c_str();
+   else{
+       std::cout <<"Errororororror \n\n\n\n\n";
+     return  "invalid shader...";
+   }
 }
 
 
@@ -70,36 +79,50 @@ switch(shadertype)
                             }
                          }
                 }
-         
-     
          }
      }
 }
 
 Shader::Shader(ShaderTypes shadertype, const char *filename)
 {
-     switch(shadertype)
+    std::fstream ss(filename, std::ios::in);
+    if(!ss.is_open())
+    {
+        std::cout <<"Archivo Invalido\n";
+    }
+    ss.seekg(0,std::ios::end );
+    int len = ss.tellg();
+    ss.seekg(0,std::ios::beg);
+    char *str= new char[len];
+    ss.read(str, len);
+    str[len]=0;
+    ss.close();
+    std::cout <<"shader\n"<<str;
+  switch(shadertype)
      {
          case ShaderTypes::VERTEX_SHADER:
          {
-                 shader = glCreateShader(GL_VERTEX_SHADER);
-                 const char *file_content = Priv::readFile(filename);
-                if(file_content)
+            shader = glCreateShader(GL_VERTEX_SHADER);
+                if(str)
                 {
-                    int len=strlen(file_content);
-                    glShaderSource(GL_VERTEX_SHADER, 1,(const GLchar *const*)file_content, &len);
+                    int len=strlen(str);
+                    glShaderSource(shader, 1, &str, NULL);
                     glCompileShader(shader);
                          {
-                            int  success;
-                            char infoLog[512];
+                            int  success=1;
+                            char infoLog[2048];
                             glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
                             if(!success)
                             {
-                                glGetShaderInfoLog(shader, 512, NULL, infoLog);
-                                std::cout << "ERROR::SHADER::COMPILATION_FAILED\n" << infoLog << std::endl;
+                                glGetShaderInfoLog(shader, 2048, NULL, infoLog);
+                                std::cout << "ERROR::SHADER::COMPILATION_FAILED\n" 
+                                          << infoLog 
+                                          << "codigo del shader es:\n"
+                                          << str
+                                          <<"\n\\n\n";
                             }
                             else{
-                                std::cout <<"Shader compiled successfully fragmnent...\n\n";
+                                std::cout <<"Shader compiled successfully vertex...\n\n";
                             }
                          }
                 }
@@ -107,19 +130,35 @@ Shader::Shader(ShaderTypes shadertype, const char *filename)
          break;
          case ShaderTypes::FRAGMENT_SHADER:
          {
-                shader = glCreateShader(GL_FRAGMENT_SHADER);
-                const char *file_content = Priv::readFile(filename);
-                if(file_content)
+            
+            shader = glCreateShader(GL_FRAGMENT_SHADER);
+                if(str)
                 {
-                    int len=strlen(file_content);
-                    glShaderSource(GL_FRAGMENT_SHADER, 1,(const GLchar *const*)file_content, &len);
+                    int len=strlen(str);
+                    glShaderSource(shader, 1, &str, NULL);
                     glCompileShader(shader);
+                         {
+                            int  success=1;
+                            char infoLog[2048];
+                            glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+                            if(!success)
+                            {
+                                glGetShaderInfoLog(shader, 2048, NULL, infoLog);
+                                std::cout << "ERROR::SHADER::COMPILATION_FAILED\n" 
+                                          << infoLog 
+                                          << "codigo del shader es:\n"
+                                          << str
+                                          <<"\n\\n\n";
+                            }
+                            else{
+                                std::cout <<"Shader compiled successfully fragmnent...\n\n";
+                            }
+                         }
                 }
          }
-         break;
-         break;
      }
-
+    delete[] str;
+    str= nullptr;
 }
 
 Shader::~Shader()

@@ -71,5 +71,11 @@ void Window::PollEvent()
       {
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
       }
+      if(event.key.keysym.sym==SDLK_l)
+      {
+           int x,y;
+           SDL_GetMouseState(&x, &y);
+           SDL_Log("mouse down %f, %f", (x/640.0f), (y/480.0f) );
+      }
     }
 }

@@ -23,7 +23,7 @@ INCLUDES +=
 FORCE_INCLUDE +=
 ALL_CPPFLAGS += $(CPPFLAGS) -MMD -MP $(DEFINES) $(INCLUDES)
 ALL_RESFLAGS += $(RESFLAGS) $(DEFINES) $(INCLUDES)
-LIBS += -lSDL2 -ldl
+LIBS += -lMingw32 -lSDL2Main -lSDL2
 LDDEPS +=
 LINKCMD = $(CXX) -o "$@" $(OBJECTS) $(RESOURCES) $(ALL_LDFLAGS) $(LIBS)
 define PREBUILDCMDS
@@ -35,7 +35,7 @@ endef
 
 ifeq ($(config),debug)
 TARGETDIR = bin/Debug
-TARGET = $(TARGETDIR)/opengl-tutorial
+TARGET = $(TARGETDIR)/opengl-tutorial.exe
 OBJDIR = obj/Debug
 DEFINES += -DSQLITE_THREADSAFE=1 -DDEBUG
 ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -g
@@ -44,7 +44,7 @@ ALL_LDFLAGS += $(LDFLAGS)
 
 else ifeq ($(config),release)
 TARGETDIR = bin/Release
-TARGET = $(TARGETDIR)/opengl-tutorial
+TARGET = $(TARGETDIR)/opengl-tutorial.exe
 OBJDIR = obj/Release
 DEFINES += -DSQLITE_THREADSAFE=1 -DNDEBUG
 ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -O2
@@ -67,6 +67,7 @@ OBJECTS :=
 OBJECTS += $(OBJDIR)/Buffer.o
 OBJECTS += $(OBJDIR)/GLProgram.o
 OBJECTS += $(OBJDIR)/Shader.o
+OBJECTS += $(OBJDIR)/VertexModel.o
 OBJECTS += $(OBJDIR)/Window.o
 OBJECTS += $(OBJDIR)/glad.o
 OBJECTS += $(OBJDIR)/main.o
@@ -138,6 +139,9 @@ $(OBJDIR)/GLProgram.o: GLProgram.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/Shader.o: Shader.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/VertexModel.o: VertexModel.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/Window.o: Window.cpp
