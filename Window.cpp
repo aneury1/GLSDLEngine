@@ -36,6 +36,9 @@ Window::Window()
   SDL_GetWindowSize(window, &w, &h);
   glViewport(0, 0, w, h);
   glClearColor(0.0f, 0.5f, 1.0f, 0.0f);
+  glEnable(GL_CULL_FACE);
+  glEnable(GL_DEPTH_TEST);
+  glDepthMask(GL_TRUE);
   running = true;
 }
 
@@ -47,7 +50,8 @@ void Window::setClearColor(float r, float g, float b, float a)
     
 void Window::clear()
 {
-   glClear(GL_COLOR_BUFFER_BIT);
+  /// glClear(GL_COLOR_BUFFER_BIT);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 void Window::updateScreen()

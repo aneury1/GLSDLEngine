@@ -39,3 +39,16 @@ bool GLProgram::compile()
 
         }
 }
+
+void GLProgram::setBool(const std::string &name, bool value) const
+{         
+    glUniform1i(glGetUniformLocation(this->gl_program, name.c_str()), (int)value); 
+}
+void GLProgram::setInt(const std::string &name, int value) const
+{ 
+    glUniform1i(glGetUniformLocation(this->gl_program, name.c_str()), value); 
+}
+void GLProgram::setFloat(const std::string &name, float value) const
+{ 
+    glUniform1f(glGetUniformLocation(this->gl_program, name.c_str()), value); 
+} 

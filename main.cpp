@@ -16,10 +16,11 @@ const char *vertex_shader =
 "layout (location = 1) in vec3 GColor;\n"
 "\n"
 "out vec3 aColor;\n"
+"uniform float xOffset;"
 "void main()\n"
 "{\n"
 "    aColor = GColor;\n"
-"    gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+"    gl_Position = vec4(aPos.x + xOffset, aPos.y, aPos.z, 1.0);\n"
 "}\n";
 
 const char *fragment_shader=
@@ -41,87 +42,73 @@ int main(int argc, char *argv[]) {
 
   std::shared_ptr<Window> window(new Window());
   std::shared_ptr<GLProgram> program(new GLProgram());
+  ///glEnable(GL_DEPTH_TEST);
   program->attachShader(new Shader(vertex_shader   , ShaderTypes::VERTEX_SHADER));
   program->attachShader(new Shader(fragment_shader , ShaderTypes::FRAGMENT_SHADER));
-  ///program->attachShader(new Shader(ShaderTypes::VERTEX_SHADER, "C:\\Aneury\\GLSDLEngine\\bin\\Debug\\v.glsl"));
-  ///program->attachShader(new Shader(ShaderTypes::FRAGMENT_SHADER, "C:\\Aneury\\GLSDLEngine\\bin\\Debug\\f.glsl"));
   program->compile();
+  
+  float Z = 0.5;
+  float MZ= -0.5;
  
-
-   float my_vertices[]={
-    // first triangle
-      //  -0.120312f, 0.050000f, 0.0f, 1 , 0 ,0,
-      // -0.048437f, 0.208333f, 0.0f, 0 , 1 ,0,
-      // -0.217187f, 0.195833f, 0.0f, 0 , 0 ,1,
-    -0.5f, -0.5f, 0.0f,
-     0.5f, -0.5f, 0.0f,
-     0.0f,  0.5f, 0.0f
-      // 0.735937, -0.524999 , 0.0f, 0 , 0 ,1,
-      // 0.860937, -0.810416 , 0.0f, 0 , 1 ,0,
-      //  0.584375, -0.829166 , 0.0f, 1 , 0 ,0,
-
-      // 0.800000, 0.056249, 0.0f, 0.78 , 0.34344 ,1,
-      //  0.181250, -0.787500, 0.0f, 0.898 , 0.787 ,0.7878871,
-      // 0.929687, 0.627083, 0.0f, 0.56767 , 0.78787 ,1,
- };
  float colors[]={
-    // first triangle
-      //  -0.120312f, 0.050000f, 0.0f, 1 , 0 ,0,
-      // -0.048437f, 0.208333f, 0.0f, 0 , 1 ,0,
-      // -0.217187f, 0.195833f, 0.0f, 0 , 0 ,1,
     0.5f, 0.5f, 1.0f,
      0.5f, 0.5f, 1.0f,
      1.0f,  0.5f, 1.0f};
    vector <float> test({
-      -0.5f, -0.5f, 0.0f,
-       0.5f, -0.5f, 0.0f,
-       0.0f,  0.5f, 0.0f});
+      -0.5f, -0.5f, Z,
+       0.5f, -0.5f, MZ,
+       0.0f,  0.5f, Z});
     vector <float> color({
       1.0f, 0.0f, 0.0f,
-      0.0f, 1.0f, 0.0f,
+      1.0f, 1.0f, 1.0f,
       0.0f, 0.0f, 1.0f
     });
 
  
 
+
+
+
+
+
    VertexModel model(test,3);
    model.addVertices(color, 3);
-   model.unbind();
+
+   vector <float> model2_vertex({
+        0.895312, 0.087499,Z,
+        0.809374, 0.222916,MZ,
+        -0.959375, -0.900000,MZ
+       });
+   VertexModel model2(model2_vertex,3);
+   model2.addVertices(color,3);
   
-    GLuint VAO, VBO;
-    glGenVertexArrays(1, &VAO);
-    glBindVertexArray(VAO);
-    glGenBuffers(1, &VBO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof( my_vertices), my_vertices, GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float) , (void *)0);
-    glEnableVertexAttribArray(0);
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    GLuint color_vBo;
-    glGenBuffers(1, &color_vBo);
-    glBindBuffer(GL_ARRAY_BUFFER, color_vBo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof( colors), colors, GL_STATIC_DRAW);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float) , (void *)0);
-    glEnableVertexAttribArray(1);
-    glBindVertexArray(0);
- 
-
-
+  
 
  
+
+
+
+  
   while (window->running) 
   {    
-    window->setClearColor(0.3,0.2,0.0,1);
+    float repeat = 0.2627450980392157;
+    window->setClearColor(repeat, repeat, repeat,1);
     window->clear();
     window->PollEvent();
+    const Uint8 *keyboard = SDL_GetKeyboardState(NULL);
     program->Use();  
-
-     model.bind();
-     glDrawArrays(GL_TRIANGLES,0, 3);
-    //  glBindVertexArray(VAO);
-    //  glDrawArrays(GL_TRIANGLES,0, 3);
-     ///glDrawElements(GL_TRIANGLES, 3 ,GL_UNSIGNED_INT , 0); 
+    if(keyboard[SDL_SCANCODE_LEFT])
+    {
+        float offset = -0.5f;
+        program->setFloat("xOffset", offset);
+    }
+    if(keyboard[SDL_SCANCODE_RIGHT])
+    {
+        float offset = 0.5f;
+        program->setFloat("xOffset", offset);
+    }
+    model.DrawArray(GL_TRIANGLES);
+    model2.DrawArray(GL_TRIANGLES);
     window->updateScreen();
     SDL_Delay(1000/60);
   }
